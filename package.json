@@ -1,0 +1,17 @@
+{
+  "name": "marfe-family-tree",
+  "version": "1.0.0",
+  "description": "Progressive Web App (PWA) para sa Marfe Family Tree",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": [
+    "pwa",
+    "family-tree",
+    "marfe"
+  ],
+  "author": "",
+  "license": "ISC"
+}

@@ -4,6 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MARFE FAMILY TREE</title>
+    <meta name="description" content="Interactive visual family tree para sa angkan ng Marfe Family.">
+    
+    <!-- PWA CONFIGURATION & ICONS -->
+    <meta name="theme-color" content="#0f172a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Marfe Tree">
+    <link rel="manifest" href="./manifest.json">
+    <link rel="icon" type="image/png" sizes="64x64" href="./icons/favicon.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="./icons/apple-touch-icon.png">
+
     <!-- GOOGLE FONTS: POPPINS -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -40,20 +51,47 @@
     <!-- STICKY TOP NAVBAR -->
     <header class="sticky top-0 z-40 w-full bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 shadow-xs mb-6">
         <div class="max-w-md mx-auto px-4 py-3 flex items-center justify-between relative">
-            <h1 class="text-base sm:text-lg font-bold tracking-wide text-slate-800 dark:text-slate-100 uppercase select-none">
-                MARFE FAMILY TREE
+            <h1 class="text-base sm:text-lg font-bold tracking-wide text-slate-800 dark:text-slate-100 uppercase select-none flex items-center gap-2">
+                <span>🌳</span>
+                <span>MARFE FAMILY TREE</span>
             </h1>
             
-            <!-- BURGER MENU BUTTON -->
-            <button onclick="toggleBurgerMenu(event)" aria-label="Open Menu" 
-                    class="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors cursor-pointer">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 6h16M4 12h16M4 18h16"/>
-                </svg>
-            </button>
+            <div class="flex items-center gap-2">
+                <!-- QUICK INSTALL BUTTON (NAVBAR - ICON ONLY) -->
+                <button id="navbar-install-btn" onclick="triggerAppInstall()" aria-label="Install App" title="I-install sa phone / desktop"
+                        class="hidden p-2 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-100 dark:hover:bg-emerald-900/80 border border-emerald-500/30 transition-colors cursor-pointer">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="7 10 12 15 17 10"/>
+                        <line x1="12" y1="15" x2="12" y2="3"/>
+                    </svg>
+                </button>
+
+                <!-- BURGER MENU BUTTON -->
+                <button onclick="toggleBurgerMenu(event)" aria-label="Open Menu" 
+                        class="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors cursor-pointer">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                </button>
+            </div>
 
             <!-- FLOATING POPUP MENU (UPPER RIGHT) -->
-            <div id="burger-dropdown" class="hidden absolute right-4 top-14 z-50 w-60 border border-slate-200 dark:border-slate-700 bg-white/95 dark:bg-slate-900/95 backdrop-blur-lg px-3 py-3 rounded-2xl space-y-2 shadow-2xl transition-all select-none">
+            <div id="burger-dropdown" class="hidden absolute right-4 top-14 z-50 w-64 border border-slate-200 dark:border-slate-700 bg-white/95 dark:bg-slate-900/95 backdrop-blur-lg px-3 py-3 rounded-2xl space-y-2 shadow-2xl transition-all select-none">
+                <!-- INSTALL APP MENU ITEM -->
+                <button id="menu-install-btn" onclick="triggerAppInstall()" 
+                        class="w-full flex items-center justify-between px-3 py-2.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 font-bold text-sm hover:bg-emerald-100 dark:hover:bg-emerald-900/80 transition-colors cursor-pointer">
+                    <span class="flex items-center gap-2.5">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-emerald-600 dark:text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                            <polyline points="7 10 12 15 17 10"/>
+                            <line x1="12" y1="15" x2="12" y2="3"/>
+                        </svg>
+                        <span id="menu-install-label">Install App</span>
+                    </span>
+                    <span id="menu-install-badge" class="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full bg-emerald-200/80 dark:bg-emerald-800/80 font-bold">PWA</span>
+                </button>
+
                 <button onclick="openSearchModal()" 
                         class="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl bg-sky-50 dark:bg-sky-950/60 text-sky-700 dark:text-sky-300 font-bold text-sm hover:bg-sky-100 dark:hover:bg-sky-900/80 transition-colors cursor-pointer">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-sky-600 dark:text-sky-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -202,6 +240,83 @@
                 </ul>
             </div>
         </div>
+    </div>
+
+    <!-- IOS / MANUAL INSTALL GUIDE MODAL -->
+    <div id="ios-install-modal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-5 w-full max-w-sm shadow-2xl space-y-4">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+                <div class="flex items-center gap-3">
+                    <img src="./icons/icon-192.png" alt="Marfe Tree Icon" class="w-10 h-10 rounded-xl object-cover shadow-sm border border-slate-200 dark:border-slate-700">
+                    <div>
+                        <h3 class="font-bold text-sm text-slate-900 dark:text-slate-100 leading-tight">How to Install the App</h3>
+                        <p class="text-[11px] text-slate-500 dark:text-slate-400 font-medium">For iPhone & iPad (Safari)</p>
+                    </div>
+                </div>
+                <button type="button" onclick="closeIosInstallModal()" class="p-1.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-sm font-bold cursor-pointer rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800">✕</button>
+            </div>
+
+            <div class="space-y-3 text-xs">
+                <div class="flex items-start gap-3 p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800">
+                    <div class="w-6 h-6 rounded-full bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-300 font-bold flex items-center justify-center shrink-0 text-xs mt-0.5">1</div>
+                    <div class="space-y-1">
+                        <p class="font-semibold text-slate-900 dark:text-slate-100">Tap the Share button</p>
+                        <p class="text-slate-500 dark:text-slate-400 text-[11px]">Find and tap the Share icon (<span class="inline-block px-1.5 py-0.5 bg-slate-200 dark:bg-slate-700 rounded text-[10px] font-bold">⎋ Share</span>) in the toolbar at the bottom of Safari.</p>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-3 p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800">
+                    <div class="w-6 h-6 rounded-full bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-300 font-bold flex items-center justify-center shrink-0 text-xs mt-0.5">2</div>
+                    <div class="space-y-1">
+                        <p class="font-semibold text-slate-900 dark:text-slate-100">Choose "Add to Home Screen"</p>
+                        <p class="text-slate-500 dark:text-slate-400 text-[11px]">Scroll down the list of options and tap <span class="inline-block px-1.5 py-0.5 bg-slate-200 dark:bg-slate-700 rounded text-[10px] font-bold">➕ Add to Home Screen</span>.</p>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-3 p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800">
+                    <div class="w-6 h-6 rounded-full bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-300 font-bold flex items-center justify-center shrink-0 text-xs mt-0.5">3</div>
+                    <div class="space-y-1">
+                        <p class="font-semibold text-slate-900 dark:text-slate-100">Tap "Add"</p>
+                        <p class="text-slate-500 dark:text-slate-400 text-[11px]">Tap <strong class="text-emerald-600 dark:text-emerald-400">Add</strong> in the top-right corner. The app will now appear on your Home Screen!</p>
+                    </div>
+                </div>
+            </div>
+
+            <button type="button" onclick="closeIosInstallModal()" 
+                    class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl shadow-xs cursor-pointer transition-colors">
+                Got it
+            </button>
+        </div>
+    </div>
+
+    <!-- FLOATING PWA BOTTOM INSTALL BANNER -->
+    <div id="pwa-install-banner" class="fixed bottom-4 left-4 right-4 max-w-md mx-auto z-50 transform translate-y-36 opacity-0 pointer-events-none transition-all duration-500 ease-out select-none">
+        <div class="bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border border-slate-200 dark:border-slate-800 rounded-2xl p-3.5 shadow-2xl flex items-center gap-3">
+            <img src="./icons/icon-192.png" alt="Marfe Tree Logo" class="w-11 h-11 rounded-xl object-cover shadow-sm border border-slate-200 dark:border-slate-700 shrink-0">
+            <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-1.5">
+                    <h4 class="font-bold text-xs sm:text-sm text-slate-800 dark:text-slate-100 truncate">Marfe Family Tree</h4>
+                    <span class="text-[9px] font-bold px-1.5 py-0.5 bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-300 rounded-md">App</span>
+                </div>
+                <p class="text-[11px] text-slate-500 dark:text-slate-400 truncate mt-0.5">I-install sa phone para mabilis mabuksan kahit offline!</p>
+            </div>
+            <div class="flex items-center gap-1.5 shrink-0">
+                <button onclick="triggerAppInstall()" class="px-3 py-2 bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white text-xs font-bold rounded-xl shadow-xs cursor-pointer transition-all whitespace-nowrap">
+                    Install
+                </button>
+                <button onclick="dismissInstallBanner()" aria-label="Close install banner" class="p-1.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-lg cursor-pointer transition-colors">
+                    ✕
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION -->
+    <div id="pwa-toast" class="fixed top-5 left-1/2 -translate-x-1/2 z-50 pointer-events-none opacity-0 transition-opacity duration-300 bg-slate-900/95 dark:bg-white/95 text-white dark:text-slate-900 text-xs font-semibold px-4 py-2.5 rounded-full shadow-2xl border border-slate-700 dark:border-slate-200 flex items-center gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-emerald-400 dark:text-emerald-600 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 6 9 17l-5-5"/>
+        </svg>
+        <span id="pwa-toast-text">App ready</span>
     </div>
 
     <div class="w-full max-w-md flex flex-col items-center px-4">
@@ -1073,7 +1188,7 @@
         }
 
         function textMatchesMenu(txt) {
-            return txt.includes('search member') || txt.includes('analytics') || txt.includes('theme mode') || txt.includes('expand all');
+            return txt.includes('search member') || txt.includes('analytics') || txt.includes('theme mode') || txt.includes('expand all') || txt.includes('install app');
         }
 
         function openAnalyticsModal() {
@@ -1141,7 +1256,7 @@
             }
         });
 
-        // Close search & analytics modals when clicking backdrop
+        // Close search, analytics, & ios install modals when clicking backdrop
         document.getElementById('search-modal').addEventListener('click', function(e) {
             if (e.target === this) {
                 closeSearchModal();
@@ -1152,6 +1267,151 @@
             if (e.target === this) {
                 closeAnalyticsModal();
             }
+        });
+
+        const iosModal = document.getElementById('ios-install-modal');
+        if (iosModal) {
+            iosModal.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeIosInstallModal();
+                }
+            });
+        }
+
+        // ==========================================
+        // PWA SERVICE WORKER & INSTALLATION LOGIC
+        // ==========================================
+        let deferredPrompt = null;
+        let isPwaInstalled = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+
+        // Register Service Worker for offline support
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then((reg) => {
+                        console.log('PWA ServiceWorker registered successfully:', reg.scope);
+                    })
+                    .catch((err) => {
+                        console.warn('PWA ServiceWorker registration failed:', err);
+                    });
+            });
+        }
+
+        // Detect iOS devices (iPhone, iPad, iPod)
+        function isIosDevice() {
+            return /iphone|ipad|ipod/.test(window.navigator.userAgent.toLowerCase()) && !window.MSStream;
+        }
+
+        // Update UI state based on installation status
+        function updateInstallUI() {
+            const navbarBtn = document.getElementById('navbar-install-btn');
+            const menuLabel = document.getElementById('menu-install-label');
+            const menuBadge = document.getElementById('menu-install-badge');
+
+            if (isPwaInstalled) {
+                if (navbarBtn) navbarBtn.classList.add('hidden');
+                if (menuLabel) menuLabel.textContent = 'App Installed';
+                if (menuBadge) {
+                    menuBadge.textContent = 'Active';
+                    menuBadge.className = 'text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full bg-slate-200/80 dark:bg-slate-700/80 font-bold text-slate-500 dark:text-slate-400';
+                }
+            } else {
+                if (navbarBtn) navbarBtn.classList.remove('hidden');
+                
+                // Show floating install banner on mobile/desktop after short delay if not dismissed
+                if (!sessionStorage.getItem('pwa_banner_dismissed')) {
+                    setTimeout(() => {
+                        const banner = document.getElementById('pwa-install-banner');
+                        if (banner && !isPwaInstalled) {
+                            banner.classList.remove('translate-y-36', 'opacity-0', 'pointer-events-none');
+                        }
+                    }, 1800);
+                }
+            }
+        }
+
+        // Capture Android / Chromium 'beforeinstallprompt' event
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            updateInstallUI();
+        });
+
+        // Trigger App Installation
+        function triggerAppInstall() {
+            // Close dropdown if open
+            const dropdown = document.getElementById('burger-dropdown');
+            if (dropdown) dropdown.classList.add('hidden');
+
+            if (isPwaInstalled) {
+                showToast('Naka-install na ang app sa iyong device!');
+                return;
+            }
+
+            if (deferredPrompt) {
+                // Native Chromium / Android prompt
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        showToast('Salamat sa pag-install ng Marfe Family Tree!');
+                        dismissInstallBanner();
+                    }
+                    deferredPrompt = null;
+                });
+            } else if (isIosDevice()) {
+                // iOS Safari: Show visual step-by-step instructions
+                openIosInstallModal();
+            } else {
+                // Other browsers or manual guide
+                openIosInstallModal();
+            }
+        }
+
+        function dismissInstallBanner() {
+            const banner = document.getElementById('pwa-install-banner');
+            if (banner) {
+                banner.classList.add('translate-y-36', 'opacity-0', 'pointer-events-none');
+            }
+            sessionStorage.setItem('pwa_banner_dismissed', 'true');
+        }
+
+        function openIosInstallModal() {
+            const modal = document.getElementById('ios-install-modal');
+            if (modal) modal.classList.remove('hidden');
+        }
+
+        function closeIosInstallModal() {
+            const modal = document.getElementById('ios-install-modal');
+            if (modal) modal.classList.add('hidden');
+        }
+
+        let toastTimeout = null;
+        function showToast(message) {
+            const toast = document.getElementById('pwa-toast');
+            const toastText = document.getElementById('pwa-toast-text');
+            if (!toast || !toastText) return;
+
+            toastText.textContent = message;
+            toast.classList.remove('opacity-0', 'pointer-events-none');
+
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toast.classList.add('opacity-0', 'pointer-events-none');
+            }, 3500);
+        }
+
+        // App successfully installed listener
+        window.addEventListener('appinstalled', () => {
+            isPwaInstalled = true;
+            deferredPrompt = null;
+            dismissInstallBanner();
+            updateInstallUI();
+            showToast('Tagumpay! Naka-install na ang Marfe Family Tree.');
+        });
+
+        // Initialize UI on DOM ready
+        window.addEventListener('DOMContentLoaded', () => {
+            updateInstallUI();
         });
     </script>
 </body>
