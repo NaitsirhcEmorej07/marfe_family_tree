@@ -1,0 +1,1158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MARFE FAMILY TREE</title>
+    <!-- GOOGLE FONTS: POPPINS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Poppins', 'sans-serif'],
+                    }
+                }
+            }
+        }
+        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    </script>
+    <style>
+        .search-target-highlight {
+            outline: 3px solid #f59e0b !important;
+            outline-offset: 2px !important;
+            box-shadow: 0 0 15px rgba(245, 158, 11, 0.6) !important;
+            animation: pulse 1.5s infinite !important;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 min-h-screen font-sans flex flex-col items-center justify-start pb-20 transition-colors duration-300">
+
+    <!-- STICKY TOP NAVBAR -->
+    <header class="sticky top-0 z-40 w-full bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 shadow-xs mb-6">
+        <div class="max-w-md mx-auto px-4 py-3 flex items-center justify-between relative">
+            <h1 class="text-base sm:text-lg font-bold tracking-wide text-slate-800 dark:text-slate-100 uppercase select-none">
+                MARFE FAMILY TREE
+            </h1>
+            
+            <!-- BURGER MENU BUTTON -->
+            <button onclick="toggleBurgerMenu(event)" aria-label="Open Menu" 
+                    class="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors cursor-pointer">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 6h16M4 12h16M4 18h16"/>
+                </svg>
+            </button>
+
+            <!-- FLOATING POPUP MENU (UPPER RIGHT) -->
+            <div id="burger-dropdown" class="hidden absolute right-4 top-14 z-50 w-60 border border-slate-200 dark:border-slate-700 bg-white/95 dark:bg-slate-900/95 backdrop-blur-lg px-3 py-3 rounded-2xl space-y-2 shadow-2xl transition-all select-none">
+                <button onclick="openSearchModal()" 
+                        class="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl bg-sky-50 dark:bg-sky-950/60 text-sky-700 dark:text-sky-300 font-bold text-sm hover:bg-sky-100 dark:hover:bg-sky-900/80 transition-colors cursor-pointer">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-sky-600 dark:text-sky-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
+                    </svg>
+                    <span>Search Member</span>
+                </button>
+                <button onclick="openAnalyticsModal()" 
+                        class="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl bg-purple-50 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300 font-bold text-sm hover:bg-purple-100 dark:hover:bg-purple-900/80 transition-colors cursor-pointer">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-purple-600 dark:text-purple-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>
+                    </svg>
+                    <span>Analytics</span>
+                </button>
+                <button onclick="toggleTheme()" 
+                        class="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-slate-700 dark:text-slate-300 font-semibold text-sm hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer">
+                    <span class="flex items-center gap-2.5">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-amber-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+                        Theme Mode
+                    </span>
+                    <span id="theme-label" class="text-xs font-bold text-slate-500 dark:text-slate-400">Light / Dark</span>
+                </button>
+                <button onclick="toggleExpandCompressAll()" 
+                        class="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-slate-700 dark:text-slate-300 font-semibold text-sm hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer">
+                    <svg id="expand-icon" xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-emerald-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="7 13 12 18 17 13"/><polyline points="7 6 12 11 17 6"/>
+                    </svg>
+                    <span id="expand-label">Expand All</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- SEARCH MODAL OVERLAY -->
+    <div id="search-modal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-xs flex items-start justify-center pt-20 px-4">
+        <form onsubmit="submitSearch(event)" class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-4 w-full max-w-md shadow-2xl space-y-3">
+            <div class="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-slate-700">
+                <h3 class="font-bold text-sm text-slate-800 dark:text-slate-100 flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-sky-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                    Search Family Member
+                </h3>
+                <button type="button" onclick="closeSearchModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1 text-xs font-bold cursor-pointer">✕</button>
+            </div>
+            
+            <div class="flex items-center gap-2">
+                <div class="relative flex-1">
+                    <input id="search-input" type="text" placeholder="Type name to search..." 
+                           class="w-full pl-9 pr-8 py-2.5 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-600 rounded-xl text-sm font-semibold text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-sky-500">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-slate-400 absolute left-3 top-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                    <button type="button" onclick="clearSearch()" class="absolute right-3 top-3 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-xs font-bold cursor-pointer">✕</button>
+                </div>
+                <button type="submit" 
+                        class="px-4 py-2.5 bg-sky-600 hover:bg-sky-500 text-white font-bold text-sm rounded-xl transition-colors shadow-sm cursor-pointer whitespace-nowrap">
+                    Search
+                </button>
+            </div>
+
+            <div id="search-status" class="text-xs font-medium text-slate-500 dark:text-slate-400 italic">
+                Press Enter or click Search to highlight & reveal member.
+            </div>
+        </form>
+    </div>
+
+    <!-- ANALYTICS MODAL OVERLAY -->
+    <div id="analytics-modal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-5 w-full max-w-md shadow-2xl space-y-5 max-h-[90vh] overflow-y-auto">
+            <!-- Header -->
+            <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+                <div class="flex items-center gap-2.5">
+                    <div class="p-2.5 rounded-2xl bg-purple-100 dark:bg-purple-950/80 text-purple-600 dark:text-purple-400">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-base text-slate-900 dark:text-slate-100 leading-tight">Family Analytics</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 font-medium">Marfe Family Insights & Statistics</p>
+                    </div>
+                </div>
+                <button type="button" onclick="closeAnalyticsModal()" class="p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-sm font-bold cursor-pointer rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800">✕</button>
+            </div>
+
+            <!-- Key Summary Metric Cards -->
+            <div class="grid grid-cols-3 gap-2.5">
+                <div class="bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/60 p-3 rounded-2xl text-center">
+                    <div id="stat-total-members" class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">77</div>
+                    <div class="text-[10px] sm:text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide mt-0.5">Total Members</div>
+                </div>
+                <div class="bg-amber-50 dark:bg-amber-950/40 border border-amber-200/80 dark:border-amber-800/50 p-3 rounded-2xl text-center">
+                    <div class="text-xl sm:text-2xl font-black text-amber-600 dark:text-amber-400">7</div>
+                    <div class="text-[10px] sm:text-xs font-bold text-amber-600/80 dark:text-amber-400/80 uppercase tracking-wide mt-0.5">Main Branches</div>
+                </div>
+                <div class="bg-sky-50 dark:bg-sky-950/40 border border-sky-200/80 dark:border-sky-800/50 p-3 rounded-2xl text-center">
+                    <div class="text-xl sm:text-2xl font-black text-sky-600 dark:text-sky-400">4</div>
+                    <div class="text-[10px] sm:text-xs font-bold text-sky-600/80 dark:text-sky-400/80 uppercase tracking-wide mt-0.5">Generations</div>
+                </div>
+            </div>
+
+            <!-- Generation Breakdown -->
+            <div class="bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 space-y-3">
+                <h4 class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-sky-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    Generation Breakdown
+                </h4>
+                <div class="space-y-2.5">
+                    <div class="flex justify-between items-center text-slate-700 dark:text-slate-300 gap-2">
+                        <span class="text-[11px] sm:text-xs font-semibold truncate">Gen 1: Ancestors</span>
+                        <span class="font-bold bg-amber-100 dark:bg-amber-900/60 text-amber-800 dark:text-amber-300 px-2.5 py-1 rounded-full text-[11px] whitespace-nowrap shrink-0">2 Members</span>
+                    </div>
+                    <div class="flex justify-between items-center text-slate-700 dark:text-slate-300 gap-2">
+                        <span class="text-[11px] sm:text-xs font-semibold truncate">Gen 2: Children & Spouses</span>
+                        <span class="font-bold bg-sky-100 dark:bg-sky-900/60 text-sky-800 dark:text-sky-300 px-2.5 py-1 rounded-full text-[11px] whitespace-nowrap shrink-0">13 Members</span>
+                    </div>
+                    <div class="flex justify-between items-center text-slate-700 dark:text-slate-300 gap-2">
+                        <span class="text-[11px] sm:text-xs font-semibold truncate">Gen 3: Grandchildren & Spouses</span>
+                        <span class="font-bold bg-emerald-100 dark:bg-emerald-900/60 text-emerald-800 dark:text-emerald-300 px-2.5 py-1 rounded-full text-[11px] whitespace-nowrap shrink-0">33 Members</span>
+                    </div>
+                    <div class="flex justify-between items-center text-slate-700 dark:text-slate-300 gap-2">
+                        <span class="text-[11px] sm:text-xs font-semibold truncate">Gen 4: Great-grandchildren</span>
+                        <span class="font-bold bg-purple-100 dark:bg-purple-900/60 text-purple-800 dark:text-purple-300 px-2.5 py-1 rounded-full text-[11px] whitespace-nowrap shrink-0">29 Members</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Branch Size Leaderboard -->
+            <div class="space-y-2.5">
+                <h4 class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-amber-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+                    Branch Leaderboard
+                </h4>
+                <div id="branch-leaderboard-list" class="space-y-2">
+                    <!-- Dynamic Bars rendered by JS -->
+                </div>
+            </div>
+
+            <!-- Quick Highlights / Trivia -->
+            <div class="bg-gradient-to-r from-purple-50 to-sky-50 dark:from-purple-950/30 dark:to-sky-950/30 border border-purple-200/80 dark:border-purple-800/40 rounded-2xl p-4 space-y-2">
+                <h4 class="text-xs font-bold text-purple-700 dark:text-purple-300 uppercase tracking-wider flex items-center gap-1.5">
+                    ✨ Family Highlights
+                </h4>
+                <ul class="text-xs text-slate-600 dark:text-slate-300 space-y-1.5 list-disc pl-4 font-medium">
+                    <li><strong class="text-slate-800 dark:text-slate-100">Founders:</strong> Tatay Indeng & Nanay Gonyang</li>
+                    <li><strong class="text-slate-800 dark:text-slate-100">Oldest Branch:</strong> Tito Boy & Tita Fe (1st)</li>
+                    <li><strong class="text-slate-800 dark:text-slate-100">Youngest Branch:</strong> Tita Bekbek & Tito Yoshinori (7th)</li>
+                    <li><strong class="text-slate-800 dark:text-slate-100">Largest Branch:</strong> Tita Connie & Tito Joe (28 Members)</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="w-full max-w-md flex flex-col items-center px-4">
+
+        <!-- LEVEL 1: ROOT ANCESTORS (TATAY INDENG & NANAY GONYANG) -->
+        <div onclick="toggle('line-root', 'children-root')" 
+             class="bg-white dark:bg-slate-800 border border-amber-300 dark:border-amber-500/80 rounded-2xl p-4 w-full text-center cursor-pointer hover:border-amber-400 hover:shadow-md transition-all duration-200 shadow-sm select-none">
+            <div class="flex items-center justify-center gap-1.5 text-sm sm:text-lg font-bold text-slate-900 dark:text-white whitespace-nowrap">
+                <span class="text-sky-600 dark:text-sky-400">TATAY INDENG</span>
+                <span class="text-slate-400 dark:text-slate-500">&</span>
+                <span class="text-rose-500 dark:text-pink-400">NANAY GONYANG</span>
+            </div>
+        </div>
+
+        <!-- CONNECTOR LINE FROM ROOT -->
+        <div id="line-root" class="w-0.5 h-8 bg-amber-400 dark:bg-amber-500"></div>
+
+        <!-- LEVEL 2: CHILDREN OF ENDING & NANAY -->
+        <div id="children-root" class="w-full space-y-5">
+            
+            <!-- 1ST CHILD BRANCH: TITO BOY & TITA FE (SKY BLUE THEME) -->
+            <div class="flex flex-col items-center w-full">
+                <div onclick="toggle('line-boy', 'children-boy')" 
+                     class="relative flex items-center justify-center bg-sky-50 dark:bg-sky-950/60 border border-sky-300 dark:border-sky-500/80 rounded-xl p-3.5 w-full cursor-pointer hover:bg-sky-100/70 hover:border-sky-400 transition-all duration-200 shadow-xs select-none">
+                    <span class="absolute -top-2.5 -left-2.5 text-[10px] font-bold uppercase tracking-wider text-white bg-sky-600 dark:bg-sky-500 border border-sky-300 dark:border-sky-400 px-2.5 py-0.5 rounded-full shadow-md select-none">
+                        1st
+                    </span>
+                    <div class="font-bold text-sm sm:text-base text-sky-950 dark:text-sky-200 text-center">
+                        TITO BOY <span class="text-slate-400 font-normal">&</span> TITA FE
+                    </div>
+                </div>
+
+                <div id="line-boy" class="w-0.5 h-6 bg-sky-300 dark:bg-sky-500 hidden"></div>
+
+                <div id="children-boy" class="hidden w-full space-y-3">
+                    <!-- 1. Lhen & Alex (Slightly narrower 92% width) -->
+                    <div class="flex flex-col items-center w-full">
+                        <div onclick="toggle('line-lhen', 'children-lhen')" 
+                             class="bg-sky-50/80 dark:bg-sky-900/30 border border-sky-200 dark:border-sky-800/60 rounded-lg p-2.5 w-[88%] text-center cursor-pointer hover:border-sky-300 hover:bg-sky-100/50 transition-all duration-200 select-none shadow-2xs">
+                            <div class="font-bold text-xs sm:text-sm text-sky-950 dark:text-sky-200">Lhen & Alex</div>
+                        </div>
+
+                        <div id="line-lhen" class="w-0.5 h-4 bg-sky-300 dark:bg-sky-600 hidden"></div>
+
+                        <!-- Grandchildren in 1 Row -->
+                        <div id="children-lhen" class="hidden w-[80%] flex flex-row justify-center gap-1 pt-0">
+                            <!-- Shalex -->
+                            <div class="flex flex-col items-center flex-1 min-w-0 relative pt-2.5">
+                                <div class="absolute top-0 left-1/2 -right-1 h-0.5 bg-sky-300 dark:bg-sky-600"></div>
+                                <div class="w-0.5 h-2.5 bg-sky-300 dark:bg-sky-600 absolute top-0 left-1/2 -translate-x-1/2"></div>
+                                <div onclick="toggle('line-shalex', 'nokids-shalex')" class="bg-sky-50/50 dark:bg-sky-950/20 border border-sky-200/80 dark:border-sky-900/50 rounded-lg p-2 w-full text-center text-[11px] sm:text-xs font-semibold text-sky-950 dark:text-sky-300 shadow-2xs cursor-pointer hover:border-sky-300 select-none truncate">Shalex</div>
+                                <div id="line-shalex" class="w-0.5 h-2 bg-sky-300 dark:bg-sky-600 hidden"></div>
+                                <div id="nokids-shalex" class="hidden bg-slate-100/80 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-800 text-slate-400 dark:text-slate-500 text-[10px] rounded p-1 w-full text-center italic font-medium">No kids yet.</div>
+                            </div>
+                            <!-- Faye -->
+                            <div class="flex flex-col items-center flex-1 min-w-0 relative pt-2.5">
+                                <div class="absolute top-0 -left-1 -right-1 h-0.5 bg-sky-300 dark:bg-sky-600"></div>
+                                <div class="w-0.5 h-2.5 bg-sky-300 dark:bg-sky-600 absolute top-0 left-1/2 -translate-x-1/2"></div>
+                                <div onclick="toggle('line-faye', 'nokids-faye')" class="bg-sky-50/50 dark:bg-sky-950/20 border border-sky-200/80 dark:border-sky-900/50 rounded-lg p-2 w-full text-center text-[11px] sm:text-xs font-semibold text-sky-950 dark:text-sky-300 shadow-2xs cursor-pointer hover:border-sky-300 select-none truncate">Faye</div>
+                                <div id="line-faye" class="w-0.5 h-2 bg-sky-300 dark:bg-sky-600 hidden"></div>
+                                <div id="nokids-faye" class="hidden bg-slate-100/80 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-800 text-slate-400 dark:text-slate-500 text-[10px] rounded p-1 w-full text-center italic font-medium">No kids yet.</div>
+                            </div>
+                            <!-- AJ -->
+                            <div class="flex flex-col items-center flex-1 min-w-0 relative pt-2.5">
+                                <div class="absolute top-0 -left-1 -right-1 h-0.5 bg-sky-300 dark:bg-sky-600"></div>
+                                <div class="w-0.5 h-2.5 bg-sky-300 dark:bg-sky-600 absolute top-0 left-1/2 -translate-x-1/2"></div>
+                                <div onclick="toggle('line-aj', 'nokids-aj')" class="bg-sky-50/50 dark:bg-sky-950/20 border border-sky-200/80 dark:border-sky-900/50 rounded-lg p-2 w-full text-center text-[11px] sm:text-xs font-semibold text-sky-950 dark:text-sky-300 shadow-2xs cursor-pointer hover:border-sky-300 select-none truncate">AJ</div>
+                                <div id="line-aj" class="w-0.5 h-2 bg-sky-300 dark:bg-sky-600 hidden"></div>
+                                <div id="nokids-aj" class="hidden bg-slate-100/80 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-800 text-slate-400 dark:text-slate-500 text-[10px] rounded p-1 w-full text-center italic font-medium">No kids yet.</div>
+                            </div>
+                            <!-- Xia -->
+                            <div class="flex flex-col items-center flex-1 min-w-0 relative pt-2.5">
+                                <div class="absolute top-0 -left-1 right-1/2 h-0.5 bg-sky-300 dark:bg-sky-600"></div>
+                                <div class="w-0.5 h-2.5 bg-sky-300 dark:bg-sky-600 absolute top-0 left-1/2 -translate-x-1/2"></div>
+                                <div onclick="toggle('line-xia', 'nokids-xia')" class="bg-sky-50/50 dark:bg-sky-950/20 border border-sky-200/80 dark:border-sky-900/50 rounded-lg p-2 w-full text-center text-[11px] sm:text-xs font-semibold text-sky-950 dark:text-sky-300 shadow-2xs cursor-pointer hover:border-sky-300 select-none truncate">Xia</div>
+                                <div id="line-xia" class="w-0.5 h-2 bg-sky-300 dark:bg-sky-600 hidden"></div>
+                                <div id="nokids-xia" class="hidden bg-slate-100/80 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-800 text-slate-400 dark:text-slate-500 text-[10px] rounded p-1 w-full text-center italic font-medium">No kids yet.</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 2. Daffy (Slightly narrower 92% width) -->
+                    <div class="flex flex-col items-center w-full">
+                        <div onclick="toggle('line-daffy', 'nokids-daffy')" class="bg-sky-50/80 dark:bg-sky-900/30 border border-sky-200 dark:border-sky-800/60 rounded-lg p-2.5 w-[88%] text-center font-bold text-xs sm:text-sm text-sky-950 dark:text-sky-200 shadow-2xs cursor-pointer hover:border-sky-300 hover:bg-sky-100/50 select-none">
+                            Daffy
+                        </div>
+                        <div id="line-daffy" class="w-0.5 h-3 bg-sky-300 dark:bg-sky-600 hidden"></div>
+                        <div id="nokids-daffy" class="hidden bg-slate-100/80 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-800 text-slate-400 dark:text-slate-500 text-[10px] rounded p-1 max-w-[140px] w-full text-center italic font-medium">No kids yet.</div>
+                    </div>
+
+                    <!-- 3. Dianne & Arlan (Slightly narrower 92% width) -->
+                    <div class="flex flex-col items-center w-full">
+                        <div onclick="toggle('line-dianne', 'children-dianne')" 
+                             class="bg-sky-50/80 dark:bg-sky-900/30 border border-sky-200 dark:border-sky-800/60 rounded-lg p-2.5 w-[88%] text-center cursor-pointer hover:border-sky-300 hover:bg-sky-100/50 transition-all duration-200 select-none shadow-2xs">
+                            <div class="font-bold text-xs sm:text-sm text-sky-950 dark:text-sky-200">Dianne & Arlan</div>
+                        </div>
+
+                        <div id="line-dianne" class="w-0.5 h-4 bg-sky-300 dark:bg-sky-600 hidden"></div>
+
+                        <!-- Grandchildren in 1 Row -->
+                        <div id="children-dianne" class="hidden w-[80%] flex flex-row justify-center gap-1.5 pt-0">
+                            <!-- Allen -->
+                            <div class="flex flex-col items-center flex-1 max-w-[140px] relative pt-2.5">
+                                <div class="absolute top-0 left-1/2 -right-1 h-0.5 bg-sky-300 dark:bg-sky-600"></div>
+                                <div class="w-0.5 h-2.5 bg-sky-300 dark:bg-sky-600 absolute top-0 left-1/2 -translate-x-1/2"></div>
+                                <div onclick="toggle('line-allen', 'nokids-allen')" class="bg-sky-50/50 dark:bg-sky-950/20 border border-sky-200/80 dark:border-sky-900/50 rounded-lg p-2 w-full text-center text-[11px] sm:text-xs font-semibold text-sky-950 dark:text-sky-300 shadow-2xs cursor-pointer hover:border-sky-300 select-none truncate">Allen</div>
+                                <div id="line-allen" class="w-0.5 h-2 bg-sky-300 dark:bg-sky-600 hidden"></div>
+                                <div id="nokids-allen" class="hidden bg-slate-100/80 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-800 text-slate-400 dark:text-slate-500 text-[10px] rounded p-1 w-full text-center italic font-medium">No kids yet.</div>
+                            </div>
+                            <!-- Alliyah -->
+                            <div class="flex flex-col items-center flex-1 max-w-[140px] relative pt-2.5">
+                                <div class="absolute top-0 -left-1 right-1/2 h-0.5 bg-sky-300 dark:bg-sky-600"></div>
+                                <div class="w-0.5 h-2.5 bg-sky-300 dark:bg-sky-600 absolute top-0 left-1/2 -translate-x-1/2"></div>
+                                <div onclick="toggle('line-alliyah', 'nokids-alliyah')" class="bg-sky-50/50 dark:bg-sky-950/20 border border-sky-200/80 dark:border-sky-900/50 rounded-lg p-2 w-full text-center text-[11px] sm:text-xs font-semibold text-sky-950 dark:text-sky-300 shadow-2xs cursor-pointer hover:border-sky-300 select-none truncate">Alliyah</div>
+                                <div id="line-alliyah" class="w-0.5 h-2 bg-sky-300 dark:bg-sky-600 hidden"></div>
+                                <div id="nokids-alliyah" class="hidden bg-slate-100/80 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-800 text-slate-400 dark:text-slate-500 text-[10px] rounded p-1 w-full text-center italic font-medium">No kids yet.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2ND CHILD BRANCH: TITA CONNIE & TITO JOE (ROSE PINK THEME) -->
+            <div class="flex flex-col items-center w-full">
+                <div onclick="toggle('line-julie', 'children-julie')" 
+                     class="relative flex items-center justify-center bg-rose-50 dark:bg-rose-950/60 border border-rose-300 dark:border-rose-500/80 rounded-xl p-3.5 w-full cursor-pointer hover:bg-rose-100/70 hover:border-rose-400 transition-all duration-200 shadow-xs select-none">
+                    <span class="absolute -top-2.5 -left-2.5 text-[10px] font-bold uppercase tracking-wider text-white bg-rose-600 dark:bg-rose-500 border border-rose-300 dark:border-rose-400 px-2.5 py-0.5 rounded-full shadow-md select-none">
+                        2nd
+                    </span>
+                    <div class="font-bold text-sm sm:text-base text-rose-950 dark:text-rose-200 text-center">
+                        TITA CONNIE <span class="text-slate-400 font-normal">&</span> TITO JOE
+                    </div>
+                </div>
+
+                <div id="line-julie" class="w-0.5 h-6 bg-rose-300 dark:bg-rose-500 hidden"></div>
+
+                <div id="children-julie" class="hidden w-full space-y-3">
+                    
+                    <!-- 1. Jhing & Marlon (Slightly narrower 92% width) -->
+                    <div class="flex flex-col items-center w-full">
+                        <div onclick="toggle('line-jhing', 'children-jhing')" 
+                             class="bg-rose-50/80 dark:bg-rose-900/30 border border-rose-200 dark:border-rose-800/60 rounded-lg p-2.5 w-[88%] text-center cursor-pointer hover:border-rose-300 hover:bg-rose-100/50 transition-all duration-200 select-none shadow-2xs">
+                            <div class="font-bold text-xs sm:text-sm text-rose-950 dark:text-rose-200">Jhing & Marlon</div>
+                        </div>
+
+                        <div id="line-jhing" class="w-0.5 h-4 bg-rose-300 dark:bg-rose-600 hidden"></div>
+
+                        <!-- Grandchildren in 1 Row -->
+                        <div id="children-jhing" class="hidden w-[80%] flex flex-row justify-center gap-1 pt-0">
+                            <!-- Andrew -->
+                            <div class="flex flex-col items-center flex-1 min-w-0 relative pt-2.5">
+                                <div class="absolute top-0 left-1/2 -right-1 h-0.5 bg-rose-300 dark:bg-rose-600"></div>
+                                <div class="w-0.5 h-2.5 bg-rose-300 dark:bg-rose-600 absolute top-0 left-1/2 -translate-x-1/2"></div>
+                                <div onclick="toggle('line-andrew', 'nokids-andrew')" class="bg-rose-50/50 dark:bg-rose-950/20 border border-rose-200/80 dark:border-rose-900/50 rounded-lg p-2 w-full text-center text-[11px] sm:text-xs font-semibold text-rose-950 dark:text-rose-300 shadow-2xs cursor-pointer hover:border-rose-300 select-none truncate">Andrew</div>
+                                <div id="line-andrew" class="w-0.5 h-2 bg-rose-300 dark:bg-rose-600 hidden"></div>
+                                <div id="nokids-andrew" class="hidden bg-slate-100/80 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-800 text-slate-400 dark:text-slate-500 text-[10px] rounded p-1 w-full text-center italic font-medium">No kids yet.</div>
+                            </div>
+                            <!-- Mark -->
+                            <div class="flex flex-col items-center flex-1 min-w-0 relative pt-2.5">
+                                <div class="absolute top-0 -left-1 -right-1 h-0.5 bg-rose-300 dark:bg-rose-600"></div>
+                                <div class="w-0.5 h-2.5 bg-rose-300 dark:bg-rose-600 absolute top-0 left-1/2 -translate-x-1/2"></div>
+                                <div onclick="toggle('line-mark', 'nokids-mark')" class="bg-rose-50/50 dark:bg-rose-950/20 border border-rose-200/80 dark:border-rose-900/50 rounded-lg p-2 w-full text-center text-[11px] sm:text-xs font-semibold text-rose-950 dark:text-rose-300 shadow-2xs cursor-pointer hover:border-rose-300 select-none truncate">Mark</div>
+                                <div id="line-mark" class="w-0.5 h-2 bg-rose-300 dark:bg-rose-600 hidden"></div>
+                                <div id="nokids-mark" class="hidden bg-slate-100/80 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-800 text-slate-400 dark:text-slate-500 text-[10px] rounded p-1 w-full text-center italic font-medium">No kids yet.</div>
+                            </div>
+                            <!-- Carlo -->
+                            <div class="flex flex-col items-center flex-1 min-w-0 relative pt-2.5">
+                                <div class="absolute top-0 -left-1 -right-1 h-0.5 bg-rose-300 dark:bg-rose-600"></div>
+                                <div class="w-0.5 h-2.5 bg-rose-300 dark:bg-rose-600 absolute top-0 left-1/2 -translate-x-1/2"></div>
+                                <div onclick="toggle('line-carlo', 'nokids-carlo')" class="bg-rose-50/50 dark:bg-rose-950/20 border border-rose-200/80 dark:border-rose-900/50 rounded-lg p-2 w-full text-center text-[11px] sm:text-xs font-semibold text-rose-950 dark:text-rose-300 shadow-2xs cursor-pointer hover:border-rose-300 select-none truncate">Carlo</div>
+                                <div id="line-carlo" class="w-0.5 h-2 bg-rose-300 dark:bg-rose-600 hidden"></div>
+                                <div id="nokids-carlo" class="hidden bg-slate-100/80 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-800 text-slate-400 dark:text-slate-500 text-[10px] rounded p-1 w-full text-center italic font-medium">No kids yet.</div>
+                            </div>
+                            <!-- Jewel -->
+                            <div class="flex flex-col items-center flex-1 min-w-0 relative pt-2.5">
+                                <div class="absolute top-0 -left-1 right-1/2 h-0.5 bg-rose-300 dark:bg-rose-600"></div>
+                                <div class="w-0.5 h-2.5 bg-rose-300 dark:bg-rose-600 absolute top-0 left-1/2 -translate-x-1/2"></div>
+                                <div onclick="toggle('line-jewel', 'nokids-jewel')" class="bg-rose-50/50 dark:bg-rose-950/20 border border-rose-200/80 dark:border-rose-900/50 rounded-lg p-2 w-full text-center text-[11px] sm:text-xs font-semibold text-rose-950 dark:text-rose-300 shadow-2xs cursor-pointer hover:border-rose-300 select-none truncate">Jewel</div>
+                                <div id="line-jewel" class="w-0.5 h-2 bg-rose-300 dark:bg-rose-600 hidden"></div>
+                                <div id="nokids-jewel" class="hidden bg-slate-100/80 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-800 text-slate-400 dark:text-slate-500 text-[10px] rounded p-1 w-full text-center italic font-medium">No kids yet.</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 2. Jr & Joan (Slightly narrower 92% width) -->
+                    <div class="flex flex-col items-center w-full">
+                        <div onclick="toggle('line-jr', 'children-jr')" 
+                             class="bg-rose-50/80 dark:bg-rose-900/30 border border-rose-200 dark:border-rose-800/60 rounded-lg p-2.5 w-[88%] text-center cursor-pointer hover:border-rose-300 hover:bg-rose-100/50 transition-all duration-200 select-none shadow-2xs">
+                            <div class="font-bold text-xs sm:text-sm text-rose-950 dark:text-rose-200">Jr & Joan</div>
+                        </div>
+
+                        <div id="line-jr" class="w-0.5 h-4 bg-rose-300 dark:bg-rose-600 hidden"></div>
+
+                        <!-- Grandchildren in 1 Row -->
+                        <div id="children-jr" class="hidden w-[80%] flex justify-center pt-0">
+                            <!-- Marric -->
+                            <div class="flex flex-col items-center flex-1 max-w-[140px]">
+                                <div onclick="toggle('line-marric', 'nokids-marric')" class="bg-rose-50/50 dark:bg-rose-950/20 border border-rose-200/80 dark:border-rose-900/50 rounded-lg p-2 w-full text-center text-[11px] sm:text-xs font-semibold text-rose-950 dark:text-rose-300 shadow-2xs cursor-pointer hover:border-rose-300 select-none truncate">Marric</div>
+                                <div id="line-marric" class="w-0.5 h-2 bg-rose-300 dark:bg-rose-600 hidden"></div>
+                                <div id="nokids-marric" class="hidden bg-slate-100/80 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-800 text-slate-400 dark:text-slate-500 text-[10px] rounded p-1 w-full text-center italic font-medium">No kids yet.</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 3. Analyn (Slightly narrower 92% width) -->
+                    <div class="flex flex-col items-center w-full">
+                        <div onclick="toggle('line-analyn', 'children-analyn')" 
+                             class="bg-rose-50/80 dark:bg-rose-900/30 border border-rose-200 dark:border-rose-800/60 rounded-lg p-2.5 w-[88%] text-center cursor-pointer hover:border-rose-300 hover:bg-rose-100/50 transition-all duration-200 select-none shadow-2xs">
+                            <div class="font-bold text-xs sm:text-sm text-rose-950 dark:text-rose-200">Analyn</div>
+                        </div>
+
+                        <div id="line-analyn" class="w-0.5 h-4 bg-rose-300 dark:bg-rose-600 hidden"></div>
+
+                        <!-- Grandchildren in 1 Row -->
+                        <div id="children-analyn" class="hidden w-[80%] flex flex-row justify-center gap-1 pt-0">
+                            <!-- Prince -->
+                            <div class="flex flex-col items-center flex-1 min-w-0 relative pt-2.5">
+                                <div class="absolute top-0 left-1/2 -right-1 h-0.5 bg-rose-300 dark:bg-rose-600"></div>
+                                <div class="w-0.5 h-2.5 bg-rose-300 dark:bg-rose-600 absolute top-0 left-1/2 -translate-x-1/2"></div>
+                                <div onclick="toggle('line-prince', 'nokids-prince')" class="bg-rose-50/50 dark:bg-rose-950/20 border border-rose-200/80 dark:border-rose-900/50 rounded-lg p-2 w-full text-center text-[11px] sm:text-xs font-semibold text-rose-950 dark:text-rose-300 shadow-2xs cursor-pointer hover:border-rose-300 select-none truncate">Prince</div>
+                                <div id="line-prince" class="w-0.5 h-2 bg-rose-300 dark:bg-rose-600 hidden"></div>
+                                <div id="nokids-prince" class="hidden bg-slate-100/80 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-800 text-slate-400 dark:text-slate-500 text-[10px] rounded p-1 w-full text-center italic font-medium">No kids yet.</div>
+                            </div>
+                            <!-- Jercent -->
+                            <div class="flex flex-col items-center flex-1 min-w-0 relative pt-2.5">
+                                <div class="absolute top-0 -left-1 -right-1 h-0.5 bg-rose-300 dark:bg-rose-600"></div>
+                                <div class="w-0.5 h-2.5 bg-rose-300 dark:bg-rose-600 absolute top-0 left-1/2 -translate-x-1/2"></div>
+                                <div onclick="toggle('line-jercent', 'nokids-jercent')" class="bg-rose-50/50 dark:bg-rose-950/20 border border-rose-200/80 dark:border-rose-900/50 rounded-lg p-2 w-full text-center text-[11px] sm:text-xs font-semibold text-rose-950 dark:text-rose-300 shadow-2xs cursor-pointer hover:border-rose-300 select-none truncate">Jercent</div>
+                                <div id="line-jercent" class="w-0.5 h-2 bg-rose-300 dark:bg-rose-600 hidden"></div>
+                                <div id="nokids-jercent" class="hidden bg-slate-100/80 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-800 text-slate-400 dark:text-slate-500 text-[10px] rounded p-1 w-full text-center italic font-medium">No kids yet.</div>
+                            </div>
+                            <!-- Japhet -->
+                            <div class="flex flex-col items-center flex-1 min-w-0 relative pt-2.5">
+                                <div class="absolute top-0 -left-1 -right-1 h-0.5 bg-rose-300 dark:bg-rose-600"></div>
+                                <div class="w-0.5 h-2.5 bg-rose-300 dark:bg-rose-600 absolute top-0 left-1/2 -translate-x-1/2"></div>
+                                <div onclick="toggle('line-japhet', 'nokids-japhet')" class="bg-rose-50/50 dark:bg-rose-950/20 border border-rose-200/80 dark:border-rose-900/50 rounded-lg p-2 w-full text-center text-[11px] sm:text-xs font-semibold text-rose-950 dark:text-rose-300 shadow-2xs cursor-pointer hover:border-rose-300 select-none truncate">Japhet</div>
+                                <div id="line-japhet" class="w-0.5 h-2 bg-rose-300 dark:bg-rose-600 hidden"></div>
+                                <div id="nokids-japhet" class="hidden bg-slate-100/80 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-800 text-slate-400 dark:text-slate-500 text-[10px] rounded p-1 w-full text-center italic font-medium">No kids yet.</div>
+                            </div>
+                            <!-- Nigel -->
+                            <div class="flex flex-col items-center flex-1 min-w-0 relative pt-2.5">
+                                <div class="absolute top-0 -left-1 right-1/2 h-0.5 bg-rose-300 dark:bg-rose-600"></div>
+                                <div class="w-0.5 h-2.5 bg-rose-300 dark:bg-rose-600 absolute top-0 left-1/2 -translate-x-1/2"></div>
+                                <div onclick="toggle('line-nigel', 'nokids-nigel')" class="bg-rose-50/50 dark:bg-rose-950/20 border border-rose-200/80 dark:border-rose-900/50 rounded-lg p-2 w-full text-center text-[11px] sm:text-xs font-semibold text-rose-950 dark:text-rose-300 shadow-2xs cursor-pointer hover:border-rose-300 select-none truncate">Nigel</div>
+                                <div id="line-nigel" class="w-0.5 h-2 bg-rose-300 dark:bg-rose-600 hidden"></div>
+                                <div id="nokids-nigel" class="hidden bg-slate-100/80 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-800 text-slate-400 dark:text-slate-500 text-[10px] rounded p-1 w-full text-center italic font-medium">No kids yet.</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 4. Arlyn (Slightly narrower 92% width) -->
+                    <div class="flex flex-col items-center w-full">
+                        <div onclick="toggle('line-arlyn', 'children-arlyn')" 
+                             class="bg-rose-50/80 dark:bg-rose-900/30 border border-rose-200 dark:border-rose-800/60 rounded-lg p-2.5 w-[88%] text-center cursor-pointer hover:border-rose-300 hover:bg-rose-100/50 transition-all duration-200 select-none shadow-2xs">
+                            <div class="font-bold text-xs sm:text-sm text-rose-950 dark:text-rose-200">Arlyn</div>
+                        </div>
+
+                        <div id="line-arlyn" class="w-0.5 h-4 bg-rose-300 dark:bg-rose-600 hidden"></div>
+
+                        <!-- Grandchildren in 1 Row -->
+                        <div id="children-arlyn" class="hidden w-[80%] flex flex-row justify-center gap-1.5 pt-0">
+                            <!-- Derrick -->
+                            <div class="flex flex-col items-center flex-1 min-w-0 relative pt-2.5">
+                                <div class="absolute top-0 left-1/2 -right-1 h-0.5 bg-rose-300 dark:bg-rose-600"></div>
+                                <div class="w-0.5 h-2.5 bg-rose-300 dark:bg-rose-600 absolute top-0 left-1/2 -translate-x-1/2"></div>
+                                <div onclick="toggle('line-derrick', 'nokids-derrick')" class="bg-rose-50/50 dark:bg-rose-950/20 border border-rose-200/80 dark:border-rose-900/50 rounded-lg p-2 w-full text-center text-[11px] sm:text-xs font-semibold text-rose-950 dark:text-rose-300 shadow-2xs cursor-pointer hover:border-rose-300 select-none truncate">Derrick</div>
+                                <div id="line-derrick" class="w-0.5 h-2 bg-rose-300 dark:bg-rose-600 hidden"></div>
+                                <div id="nokids-derrick" class="hidden bg-slate-100/80 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-800 text-slate-400 dark:text-slate-500 text-[10px] rounded p-1 w-full text-center italic font-medium">No kids yet.</div>
+                            </div>
+                            <!-- Sean -->
+                            <div class="flex flex-col items-center flex-1 min-w-0 relative pt-2.5">
+                                <div class="absolute top-0 -left-1 -right-1 h-0.5 bg-rose-300 dark:bg-rose-600"></div>
+                                <div class="w-0.5 h-2.5 bg-rose-300 dark:bg-rose-600 absolute top-0 left-1/2 -translate-x-1/2"></div>
+                                <div onclick="toggle('line-sean', 'nokids-sean')" class="bg-rose-50/50 dark:bg-rose-950/20 border border-rose-200/80 dark:border-rose-900/50 rounded-lg p-2 w-full text-center text-[11px] sm:text-xs font-semibold text-rose-950 dark:text-rose-300 shadow-2xs cursor-pointer hover:border-rose-300 select-none truncate">Sean</div>
+                                <div id="line-sean" class="w-0.5 h-2 bg-rose-300 dark:bg-rose-600 hidden"></div>
+                                <div id="nokids-sean" class="hidden bg-slate-100/80 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-800 text-slate-400 dark:text-slate-500 text-[10px] rounded p-1 w-full text-center italic font-medium">No kids yet.</div>
+                            </div>
+                            <!-- Aldrin -->
+                            <div class="flex flex-col items-center flex-1 min-w-0 relative pt-2.5">
+                                <div class="absolute top-0 -left-1 right-1/2 h-0.5 bg-rose-300 dark:bg-rose-600"></div>
+                                <div class="w-0.5 h-2.5 bg-rose-300 dark:bg-rose-600 absolute top-0 left-1/2 -translate-x-1/2"></div>
+                                <div onclick="toggle('line-aldrin', 'nokids-aldrin')" class="bg-rose-50/50 dark:bg-rose-950/20 border border-rose-200/80 dark:border-rose-900/50 rounded-lg p-2 w-full text-center text-[11px] sm:text-xs font-semibold text-rose-950 dark:text-rose-300 shadow-2xs cursor-pointer hover:border-rose-300 select-none truncate">Aldrin</div>
+                                <div id="line-aldrin" class="w-0.5 h-2 bg-rose-300 dark:bg-rose-600 hidden"></div>
+                                <div id="nokids-aldrin" class="hidden bg-slate-100/80 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-800 text-slate-400 dark:text-slate-500 text-[10px] rounded p-1 w-full text-center italic font-medium">No kids yet.</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 5. Jocelyn (Slightly narrower 92% width) -->
+                    <div class="flex flex-col items-center w-full">
+                        <div onclick="toggle('line-jocelyn', 'children-jocelyn')" 
+                             class="bg-rose-50/80 dark:bg-rose-900/30 border border-rose-200 dark:border-rose-800/60 rounded-lg p-2.5 w-[88%] text-center cursor-pointer hover:border-rose-300 hover:bg-rose-100/50 transition-all duration-200 select-none shadow-2xs">
+                            <div class="font-bold text-xs sm:text-sm text-rose-950 dark:text-rose-200">Jocelyn</div>
+                        </div>
+
+                        <div id="line-jocelyn" class="w-0.5 h-4 bg-rose-300 dark:bg-rose-600 hidden"></div>
+
+                        <!-- Grandchildren in 1 Row -->
+                        <div id="children-jocelyn" class="hidden w-[80%] flex justify-center pt-0">
+                            <!-- Zach -->
+                            <div class="flex flex-col items-center flex-1 max-w-[140px]">
+                                <div onclick="toggle('line-zach', 'nokids-zach')" class="bg-rose-50/50 dark:bg-rose-950/20 border border-rose-200/80 dark:border-rose-900/50 rounded-lg p-2 w-full text-center text-[11px] sm:text-xs font-semibold text-rose-950 dark:text-rose-300 shadow-2xs cursor-pointer hover:border-rose-300 select-none truncate">Zach</div>
+                                <div id="line-zach" class="w-0.5 h-2 bg-rose-300 dark:bg-rose-600 hidden"></div>
+                                <div id="nokids-zach" class="hidden bg-slate-100/80 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-800 text-slate-400 dark:text-slate-500 text-[10px] rounded p-1 w-full text-center italic font-medium">No kids yet.</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 6. Nunoy & Anne (Slightly narrower 92% width) -->
+                    <div class="flex flex-col items-center w-full">
+                        <div onclick="toggle('line-nunoy', 'children-nunoy')" 
+                             class="bg-rose-50/80 dark:bg-rose-900/30 border border-rose-200 dark:border-rose-800/60 rounded-lg p-2.5 w-[88%] text-center cursor-pointer hover:border-rose-300 hover:bg-rose-100/50 transition-all duration-200 select-none shadow-2xs">
+                            <div class="font-bold text-xs sm:text-sm text-rose-950 dark:text-rose-200">Nunoy & Anne</div>
+                        </div>
+
+                        <div id="line-nunoy" class="w-0.5 h-4 bg-rose-300 dark:bg-rose-600 hidden"></div>
+
+                        <!-- Grandchildren in 1 Row -->
+                        <div id="children-nunoy" class="hidden w-[80%] flex justify-center pt-0">
+                            <!-- Khalix -->
+                            <div class="flex flex-col items-center flex-1 max-w-[140px]">
+                                <div onclick="toggle('line-khalix', 'nokids-khalix')" class="bg-rose-50/50 dark:bg-rose-950/20 border border-rose-200/80 dark:border-rose-900/50 rounded-lg p-2 w-full text-center text-[11px] sm:text-xs font-semibold text-rose-950 dark:text-rose-300 shadow-2xs cursor-pointer hover:border-rose-300 select-none truncate">Khalix</div>
+                                <div id="line-khalix" class="w-0.5 h-2 bg-rose-300 dark:bg-rose-600 hidden"></div>
+                                <div id="nokids-khalix" class="hidden bg-slate-100/80 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-800 text-slate-400 dark:text-slate-500 text-[10px] rounded p-1 w-full text-center italic font-medium">No kids yet.</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 7. Jonnie & Ella (Slightly narrower 92% width) -->
+                    <div class="flex flex-col items-center w-full">
+                        <div onclick="toggle('line-jonnie', 'children-jonnie')" 
+                             class="bg-rose-50/80 dark:bg-rose-900/30 border border-rose-200 dark:border-rose-800/60 rounded-lg p-2.5 w-[88%] text-center cursor-pointer hover:border-rose-300 hover:bg-rose-100/50 transition-all duration-200 select-none shadow-2xs">
+                            <div class="font-bold text-xs sm:text-sm text-rose-950 dark:text-rose-200">Jonnie & Ella</div>
+                        </div>
+
+                        <div id="line-jonnie" class="w-0.5 h-4 bg-rose-300 dark:bg-rose-600 hidden"></div>
+
+                        <!-- Grandchildren in 1 Row -->
+                        <div id="children-jonnie" class="hidden w-[80%] flex justify-center pt-0">
+                            <!-- Samarah -->
+                            <div class="flex flex-col items-center flex-1 max-w-[140px]">
+                                <div onclick="toggle('line-samarah', 'nokids-samarah')" class="bg-rose-50/50 dark:bg-rose-950/20 border border-rose-200/80 dark:border-rose-900/50 rounded-lg p-2 w-full text-center text-[11px] sm:text-xs font-semibold text-rose-950 dark:text-rose-300 shadow-2xs cursor-pointer hover:border-rose-300 select-none truncate">Samarah</div>
+                                <div id="line-samarah" class="w-0.5 h-2 bg-rose-300 dark:bg-rose-600 hidden"></div>
+                                <div id="nokids-samarah" class="hidden bg-slate-100/80 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-800 text-slate-400 dark:text-slate-500 text-[10px] rounded p-1 w-full text-center italic font-medium">No kids yet.</div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- 3RD CHILD BRANCH: TITA BABY & TITO RENE (EMERALD THEME) -->
+            <div class="flex flex-col items-center w-full">
+                <div onclick="toggle('line-baby', 'children-baby')" 
+                     class="relative flex items-center justify-center bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-300 dark:border-emerald-500/80 rounded-xl p-3.5 w-full cursor-pointer hover:bg-emerald-100/70 hover:border-emerald-400 transition-all duration-200 shadow-xs select-none">
+                    <span class="absolute -top-2.5 -left-2.5 text-[10px] font-bold uppercase tracking-wider text-white bg-emerald-600 dark:bg-emerald-500 border border-emerald-300 dark:border-emerald-400 px-2.5 py-0.5 rounded-full shadow-md select-none">
+                        3rd
+                    </span>
+                    <div class="font-bold text-sm sm:text-base text-emerald-950 dark:text-emerald-200 text-center">
+                        TITA BABY <span class="text-slate-400 font-normal">&</span> TITO RENE
+                    </div>
+                </div>
+
+                <div id="line-baby" class="w-0.5 h-6 bg-emerald-300 dark:bg-emerald-500 hidden"></div>
+
+                <div id="children-baby" class="hidden w-full space-y-3">
+                    
+                    <!-- 1. Moises & Angelika (Slightly narrower 92% width) -->
+                    <div class="flex flex-col items-center w-full">
+                        <div onclick="toggle('line-moises', 'children-moises')" 
+                             class="bg-emerald-50/80 dark:bg-emerald-900/30 border border-emerald-200 dark:border-emerald-800/60 rounded-lg p-2.5 w-[88%] text-center cursor-pointer hover:border-emerald-300 hover:bg-emerald-100/50 transition-all duration-200 select-none shadow-2xs">
+                            <div class="font-bold text-xs sm:text-sm text-emerald-950 dark:text-emerald-200">Moises & Angelika</div>
+                        </div>
+
+                        <div id="line-moises" class="w-0.5 h-4 bg-emerald-300 dark:bg-emerald-600 hidden"></div>
+
+                        <!-- Grandchildren in 1 Row -->
+                        <div id="children-moises" class="hidden w-[80%] flex justify-center pt-0">
+                            <!-- Alonzo -->
+                            <div class="flex flex-col items-center flex-1 max-w-[140px]">
+                                <div onclick="toggle('line-alonzo', 'nokids-alonzo')" class="bg-emerald-50/50 dark:bg-emerald-950/20 border border-emerald-200/80 dark:border-emerald-900/50 rounded-lg p-2 w-full text-center text-[11px] sm:text-xs font-semibold text-emerald-950 dark:text-emerald-300 shadow-2xs cursor-pointer hover:border-emerald-300 select-none truncate">Alonzo</div>
+                                <div id="line-alonzo" class="w-0.5 h-2 bg-emerald-300 dark:bg-emerald-600 hidden"></div>
+                                <div id="nokids-alonzo" class="hidden bg-slate-100/80 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-800 text-slate-400 dark:text-slate-500 text-[10px] rounded p-1 w-full text-center italic font-medium">No kids yet.</div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- 4TH CHILD BRANCH: TITO ROME & TITA BABY (PURPLE THEME) -->
+            <div class="flex flex-col items-center w-full">
+                <div onclick="toggle('line-rome', 'children-rome')" 
+                     class="relative flex items-center justify-center bg-purple-50 dark:bg-purple-950/60 border border-purple-300 dark:border-purple-500/80 rounded-xl p-3.5 w-full cursor-pointer hover:bg-purple-100/70 hover:border-purple-400 transition-all duration-200 shadow-xs select-none">
+                    <span class="absolute -top-2.5 -left-2.5 text-[10px] font-bold uppercase tracking-wider text-white bg-purple-600 dark:bg-purple-500 border border-purple-300 dark:border-purple-400 px-2.5 py-0.5 rounded-full shadow-md select-none">
+                        4th
+                    </span>
+                    <div class="font-bold text-sm sm:text-base text-purple-950 dark:text-purple-200 text-center">
+                        TITO ROME <span class="text-slate-400 font-normal">&</span> TITA BABY
+                    </div>
+                </div>
+
+                <div id="line-rome" class="w-0.5 h-6 bg-purple-300 dark:bg-purple-500 hidden"></div>
+
+                <div id="children-rome" class="hidden w-full space-y-3">
+                    
+                    <!-- 1. Roseann & Tutoy (Slightly narrower 88% width) -->
+                    <div class="flex flex-col items-center w-full">
+                        <div onclick="toggle('line-roseann', 'children-roseann')" 
+                             class="bg-purple-50/80 dark:bg-purple-900/30 border border-purple-200 dark:border-purple-800/60 rounded-lg p-2.5 w-[88%] text-center cursor-pointer hover:border-purple-300 hover:bg-purple-100/50 transition-all duration-200 select-none shadow-2xs">
+                            <div class="font-bold text-xs sm:text-sm text-purple-950 dark:text-purple-200">Roseann & Tutoy</div>
+                        </div>
+
+                        <div id="line-roseann" class="w-0.5 h-4 bg-purple-300 dark:bg-purple-600 hidden"></div>
+
+                        <!-- Grandchildren in 1 Row -->
+                        <div id="children-roseann" class="hidden w-[80%] flex flex-row justify-center gap-1 pt-0">
+                            <!-- Kian -->
+                            <div class="flex flex-col items-center flex-1 min-w-0 relative pt-2.5">
+                                <div class="absolute top-0 left-1/2 -right-1 h-0.5 bg-purple-300 dark:bg-purple-600"></div>
+                                <div class="w-0.5 h-2.5 bg-purple-300 dark:bg-purple-600 absolute top-0 left-1/2 -translate-x-1/2"></div>
+                                <div onclick="toggle('line-kian', 'nokids-kian')" class="bg-purple-50/50 dark:bg-purple-950/20 border border-purple-200/80 dark:border-purple-900/50 rounded-lg p-2 w-full text-center text-[11px] sm:text-xs font-semibold text-purple-950 dark:text-purple-300 shadow-2xs cursor-pointer hover:border-purple-300 select-none truncate">Kian</div>
+                                <div id="line-kian" class="w-0.5 h-2 bg-purple-300 dark:bg-purple-600 hidden"></div>
+                                <div id="nokids-kian" class="hidden bg-slate-100/80 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-800 text-slate-400 dark:text-slate-500 text-[10px] rounded p-1 w-full text-center italic font-medium">No kids yet.</div>
+                            </div>
+                            <!-- Kyle -->
+                            <div class="flex flex-col items-center flex-1 min-w-0 relative pt-2.5">
+                                <div class="absolute top-0 -left-1 -right-1 h-0.5 bg-purple-300 dark:bg-purple-600"></div>
+                                <div class="w-0.5 h-2.5 bg-purple-300 dark:bg-purple-600 absolute top-0 left-1/2 -translate-x-1/2"></div>
+                                <div onclick="toggle('line-kyle', 'nokids-kyle')" class="bg-purple-50/50 dark:bg-purple-950/20 border border-purple-200/80 dark:border-purple-900/50 rounded-lg p-2 w-full text-center text-[11px] sm:text-xs font-semibold text-purple-950 dark:text-purple-300 shadow-2xs cursor-pointer hover:border-purple-300 select-none truncate">Kyle</div>
+                                <div id="line-kyle" class="w-0.5 h-2 bg-purple-300 dark:bg-purple-600 hidden"></div>
+                                <div id="nokids-kyle" class="hidden bg-slate-100/80 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-800 text-slate-400 dark:text-slate-500 text-[10px] rounded p-1 w-full text-center italic font-medium">No kids yet.</div>
+                            </div>
+                            <!-- Kyel -->
+                            <div class="flex flex-col items-center flex-1 min-w-0 relative pt-2.5">
+                                <div class="absolute top-0 -left-1 right-1/2 h-0.5 bg-purple-300 dark:bg-purple-600"></div>
+                                <div class="w-0.5 h-2.5 bg-purple-300 dark:bg-purple-600 absolute top-0 left-1/2 -translate-x-1/2"></div>
+                                <div onclick="toggle('line-kyel', 'nokids-kyel')" class="bg-purple-50/50 dark:bg-purple-950/20 border border-purple-200/80 dark:border-purple-900/50 rounded-lg p-2 w-full text-center text-[11px] sm:text-xs font-semibold text-purple-950 dark:text-purple-300 shadow-2xs cursor-pointer hover:border-purple-300 select-none truncate">Kyel</div>
+                                <div id="line-kyel" class="w-0.5 h-2 bg-purple-300 dark:bg-purple-600 hidden"></div>
+                                <div id="nokids-kyel" class="hidden bg-slate-100/80 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-800 text-slate-400 dark:text-slate-500 text-[10px] rounded p-1 w-full text-center italic font-medium">No kids yet.</div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- 5TH CHILD BRANCH: TITA TESS & TITO BERT (CYAN THEME) -->
+            <div class="flex flex-col items-center w-full">
+                <div onclick="toggle('line-tess', 'children-tess')" 
+                     class="relative flex items-center justify-center bg-cyan-50 dark:bg-cyan-950/60 border border-cyan-300 dark:border-cyan-500/80 rounded-xl p-3.5 w-full cursor-pointer hover:bg-cyan-100/70 hover:border-cyan-400 transition-all duration-200 shadow-xs select-none">
+                    <span class="absolute -top-2.5 -left-2.5 text-[10px] font-bold uppercase tracking-wider text-white bg-cyan-600 dark:bg-cyan-500 border border-cyan-300 dark:border-cyan-400 px-2.5 py-0.5 rounded-full shadow-md select-none">
+                        5th
+                    </span>
+                    <div class="font-bold text-sm sm:text-base text-cyan-950 dark:text-cyan-200 text-center">
+                        TITA TESS <span class="text-slate-400 font-normal">&</span> TITO BERT
+                    </div>
+                </div>
+
+                <div id="line-tess" class="w-0.5 h-6 bg-cyan-300 dark:bg-cyan-500 hidden"></div>
+
+                <div id="children-tess" class="hidden w-full space-y-3">
+                    
+                    <!-- 1. Jerome & Myra -->
+                    <div class="flex flex-col items-center w-full">
+                        <div onclick="toggle('line-jerome', 'children-jerome')" 
+                             class="bg-cyan-50/80 dark:bg-cyan-900/30 border border-cyan-200 dark:border-cyan-800/60 rounded-lg p-2.5 w-[88%] text-center cursor-pointer hover:border-cyan-300 hover:bg-cyan-100/50 transition-all duration-200 select-none shadow-2xs">
+                            <div class="font-bold text-xs sm:text-sm text-cyan-950 dark:text-cyan-200">Jerome & Myra</div>
+                        </div>
+
+                        <div id="line-jerome" class="w-0.5 h-4 bg-cyan-300 dark:bg-cyan-600 hidden"></div>
+
+                        <!-- Grandchildren in 1 Row -->
+                        <div id="children-jerome" class="hidden w-[80%] flex flex-row justify-center gap-1.5 pt-0">
+                            <!-- Moriah -->
+                            <div class="flex flex-col items-center flex-1 max-w-[140px] relative pt-2.5">
+                                <div class="absolute top-0 left-1/2 -right-1 h-0.5 bg-cyan-300 dark:bg-cyan-600"></div>
+                                <div class="w-0.5 h-2.5 bg-cyan-300 dark:bg-cyan-600 absolute top-0 left-1/2 -translate-x-1/2"></div>
+                                <div onclick="toggle('line-moriah', 'nokids-moriah')" class="bg-cyan-50/50 dark:bg-cyan-950/20 border border-cyan-200/80 dark:border-cyan-900/50 rounded-lg p-2 w-full text-center text-[11px] sm:text-xs font-semibold text-cyan-950 dark:text-cyan-300 shadow-2xs cursor-pointer hover:border-cyan-300 select-none truncate">Moriah</div>
+                                <div id="line-moriah" class="w-0.5 h-2 bg-cyan-300 dark:bg-cyan-600 hidden"></div>
+                                <div id="nokids-moriah" class="hidden bg-slate-100/80 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-800 text-slate-400 dark:text-slate-500 text-[10px] rounded p-1 w-full text-center italic font-medium">No kids yet.</div>
+                            </div>
+                            <!-- Luke -->
+                            <div class="flex flex-col items-center flex-1 max-w-[140px] relative pt-2.5">
+                                <div class="absolute top-0 -left-1 right-1/2 h-0.5 bg-cyan-300 dark:bg-cyan-600"></div>
+                                <div class="w-0.5 h-2.5 bg-cyan-300 dark:bg-cyan-600 absolute top-0 left-1/2 -translate-x-1/2"></div>
+                                <div onclick="toggle('line-luke', 'nokids-luke')" class="bg-cyan-50/50 dark:bg-cyan-950/20 border border-cyan-200/80 dark:border-cyan-900/50 rounded-lg p-2 w-full text-center text-[11px] sm:text-xs font-semibold text-cyan-950 dark:text-cyan-300 shadow-2xs cursor-pointer hover:border-cyan-300 select-none truncate">Luke</div>
+                                <div id="line-luke" class="w-0.5 h-2 bg-cyan-300 dark:bg-cyan-600 hidden"></div>
+                                <div id="nokids-luke" class="hidden bg-slate-100/80 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-800 text-slate-400 dark:text-slate-500 text-[10px] rounded p-1 w-full text-center italic font-medium">No kids yet.</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 2. Izsa & Bek -->
+                    <div class="flex flex-col items-center w-full">
+                        <div onclick="toggle('line-izsa', 'children-izsa')" 
+                             class="bg-cyan-50/80 dark:bg-cyan-900/30 border border-cyan-200 dark:border-cyan-800/60 rounded-lg p-2.5 w-[88%] text-center cursor-pointer hover:border-cyan-300 hover:bg-cyan-100/50 transition-all duration-200 select-none shadow-2xs">
+                            <div class="font-bold text-xs sm:text-sm text-cyan-950 dark:text-cyan-200">Izsa & Bek</div>
+                        </div>
+
+                        <div id="line-izsa" class="w-0.5 h-4 bg-cyan-300 dark:bg-cyan-600 hidden"></div>
+
+                        <!-- Grandchildren in 1 Row -->
+                        <div id="children-izsa" class="hidden w-[80%] flex justify-center pt-0">
+                            <!-- Zain -->
+                            <div class="flex flex-col items-center flex-1 max-w-[140px]">
+                                <div onclick="toggle('line-zain', 'nokids-zain')" class="bg-cyan-50/50 dark:bg-cyan-950/20 border border-cyan-200/80 dark:border-cyan-900/50 rounded-lg p-2 w-full text-center text-[11px] sm:text-xs font-semibold text-cyan-950 dark:text-cyan-300 shadow-2xs cursor-pointer hover:border-cyan-300 select-none truncate">Zain</div>
+                                <div id="line-zain" class="w-0.5 h-2 bg-cyan-300 dark:bg-cyan-600 hidden"></div>
+                                <div id="nokids-zain" class="hidden bg-slate-100/80 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-800 text-slate-400 dark:text-slate-500 text-[10px] rounded p-1 w-full text-center italic font-medium">No kids yet.</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 3. Paulo -->
+                    <div class="flex flex-col items-center w-full">
+                        <div onclick="toggle('line-paulo', 'nokids-paulo')" class="bg-cyan-50/80 dark:bg-cyan-900/30 border border-cyan-200 dark:border-cyan-800/60 rounded-lg p-2.5 w-[88%] text-center font-bold text-xs sm:text-sm text-cyan-950 dark:text-cyan-200 shadow-2xs cursor-pointer hover:border-cyan-300 hover:bg-cyan-100/50 select-none">
+                            Paulo
+                        </div>
+                        <div id="line-paulo" class="w-0.5 h-3 bg-cyan-300 dark:bg-cyan-600 hidden"></div>
+                        <div id="nokids-paulo" class="hidden bg-slate-100/80 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-800 text-slate-400 dark:text-slate-500 text-[10px] rounded p-1 max-w-[140px] w-full text-center italic font-medium">No kids yet.</div>
+                    </div>
+
+                    <!-- 4. Nicole -->
+                    <div class="flex flex-col items-center w-full">
+                        <div onclick="toggle('line-nicole', 'nokids-nicole')" class="bg-cyan-50/80 dark:bg-cyan-900/30 border border-cyan-200 dark:border-cyan-800/60 rounded-lg p-2.5 w-[88%] text-center font-bold text-xs sm:text-sm text-cyan-950 dark:text-cyan-200 shadow-2xs cursor-pointer hover:border-cyan-300 hover:bg-cyan-100/50 select-none">
+                            Nicole
+                        </div>
+                        <div id="line-nicole" class="w-0.5 h-3 bg-cyan-300 dark:bg-cyan-600 hidden"></div>
+                        <div id="nokids-nicole" class="hidden bg-slate-100/80 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-800 text-slate-400 dark:text-slate-500 text-[10px] rounded p-1 max-w-[140px] w-full text-center italic font-medium">No kids yet.</div>
+                    </div>
+
+                    <!-- 5. Jayjay -->
+                    <div class="flex flex-col items-center w-full">
+                        <div onclick="toggle('line-jayjay', 'nokids-jayjay')" class="bg-cyan-50/80 dark:bg-cyan-900/30 border border-cyan-200 dark:border-cyan-800/60 rounded-lg p-2.5 w-[88%] text-center font-bold text-xs sm:text-sm text-cyan-950 dark:text-cyan-200 shadow-2xs cursor-pointer hover:border-cyan-300 hover:bg-cyan-100/50 select-none">
+                            Jayjay
+                        </div>
+                        <div id="line-jayjay" class="w-0.5 h-3 bg-cyan-300 dark:bg-cyan-600 hidden"></div>
+                        <div id="nokids-jayjay" class="hidden bg-slate-100/80 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-800 text-slate-400 dark:text-slate-500 text-[10px] rounded p-1 max-w-[140px] w-full text-center italic font-medium">No kids yet.</div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- 6TH CHILD BRANCH: TITO ROLLY (INDIGO THEME) -->
+            <div class="flex flex-col items-center w-full">
+                <div onclick="toggle('line-rolly', 'nokids-rolly')" 
+                     class="relative flex items-center justify-center bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-300 dark:border-indigo-500/80 rounded-xl p-3.5 w-full cursor-pointer hover:bg-indigo-100/70 hover:border-indigo-400 transition-all duration-200 shadow-xs select-none">
+                    <span class="absolute -top-2.5 -left-2.5 text-[10px] font-bold uppercase tracking-wider text-white bg-indigo-600 dark:bg-indigo-500 border border-indigo-300 dark:border-indigo-400 px-2.5 py-0.5 rounded-full shadow-md select-none">
+                        6th
+                    </span>
+                    <div class="font-bold text-sm sm:text-base text-indigo-950 dark:text-indigo-200 text-center">
+                        TITO ROLLY
+                    </div>
+                </div>
+
+                <div id="line-rolly" class="w-0.5 h-4 bg-indigo-300 dark:bg-indigo-500 hidden"></div>
+                <div id="nokids-rolly" class="hidden bg-slate-100/80 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-800 text-slate-400 dark:text-slate-500 text-[10px] rounded p-1.5 max-w-[160px] w-full text-center italic font-medium">No kids yet.</div>
+            </div>
+
+            <!-- 7TH CHILD BRANCH: TITA BEKBEK & TITO YOSHINORI (AMBER THEME) -->
+            <div class="flex flex-col items-center w-full">
+                <div onclick="toggle('line-bekbek', 'children-bekbek')" 
+                     class="relative flex items-center justify-center bg-amber-50 dark:bg-amber-950/60 border border-amber-300 dark:border-amber-500/80 rounded-xl p-3.5 w-full cursor-pointer hover:bg-amber-100/70 hover:border-amber-400 transition-all duration-200 shadow-xs select-none">
+                    <span class="absolute -top-2.5 -left-2.5 text-[10px] font-bold uppercase tracking-wider text-white bg-amber-600 dark:bg-amber-500 border border-amber-300 dark:border-amber-400 px-2.5 py-0.5 rounded-full shadow-md select-none">
+                        7th
+                    </span>
+                    <div class="font-bold text-sm sm:text-base text-amber-950 dark:text-amber-200 text-center">
+                        TITA BEKBEK <span class="text-slate-400 font-normal">&</span> TITO YOSHINORI
+                    </div>
+                </div>
+
+                <div id="line-bekbek" class="w-0.5 h-6 bg-amber-300 dark:bg-amber-500 hidden"></div>
+
+                <div id="children-bekbek" class="hidden w-full space-y-3">
+                    
+                    <!-- 1. John john (Slightly narrower 88% width) -->
+                    <div class="flex flex-col items-center w-full">
+                        <div onclick="toggle('line-johnjohn', 'nokids-johnjohn')" class="bg-amber-50/80 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-800/60 rounded-lg p-2.5 w-[88%] text-center font-bold text-xs sm:text-sm text-amber-950 dark:text-amber-200 shadow-2xs cursor-pointer hover:border-amber-300 hover:bg-amber-100/50 select-none">
+                            John john
+                        </div>
+                        <div id="line-johnjohn" class="w-0.5 h-3 bg-amber-300 dark:bg-amber-600 hidden"></div>
+                        <div id="nokids-johnjohn" class="hidden bg-slate-100/80 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-800 text-slate-400 dark:text-slate-500 text-[10px] rounded p-1 max-w-[140px] w-full text-center italic font-medium">No kids yet.</div>
+                    </div>
+
+                    <!-- 2. Danica & Tomoyuki (Slightly narrower 88% width) -->
+                    <div class="flex flex-col items-center w-full">
+                        <div onclick="toggle('line-danica', 'children-danica')" 
+                             class="bg-amber-50/80 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-800/60 rounded-lg p-2.5 w-[88%] text-center cursor-pointer hover:border-amber-300 hover:bg-amber-100/50 transition-all duration-200 select-none shadow-2xs">
+                            <div class="font-bold text-xs sm:text-sm text-amber-950 dark:text-amber-200">Danica & Tomoyuki</div>
+                        </div>
+
+                        <div id="line-danica" class="w-0.5 h-4 bg-amber-300 dark:bg-amber-600 hidden"></div>
+
+                        <!-- Grandchildren in 1 Row -->
+                        <div id="children-danica" class="hidden w-[80%] flex justify-center pt-0">
+                            <!-- Ren -->
+                            <div class="flex flex-col items-center flex-1 max-w-[140px]">
+                                <div onclick="toggle('line-ren', 'nokids-ren')" class="bg-amber-50/50 dark:bg-amber-950/20 border border-amber-200/80 dark:border-amber-900/50 rounded-lg p-2 w-full text-center text-[11px] sm:text-xs font-semibold text-amber-950 dark:text-amber-300 shadow-2xs cursor-pointer hover:border-amber-300 select-none truncate">Ren</div>
+                                <div id="line-ren" class="w-0.5 h-2 bg-amber-300 dark:bg-amber-600 hidden"></div>
+                                <div id="nokids-ren" class="hidden bg-slate-100/80 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-800 text-slate-400 dark:text-slate-500 text-[10px] rounded p-1 w-full text-center italic font-medium">No kids yet.</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 3. Abby (Slightly narrower 88% width) -->
+                    <div class="flex flex-col items-center w-full">
+                        <div onclick="toggle('line-abby', 'nokids-abby')" class="bg-amber-50/80 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-800/60 rounded-lg p-2.5 w-[88%] text-center font-bold text-xs sm:text-sm text-amber-950 dark:text-amber-200 shadow-2xs cursor-pointer hover:border-amber-300 hover:bg-amber-100/50 select-none">
+                            Abby
+                        </div>
+                        <div id="line-abby" class="w-0.5 h-3 bg-amber-300 dark:bg-amber-600 hidden"></div>
+                        <div id="nokids-abby" class="hidden bg-slate-100/80 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-800 text-slate-400 dark:text-slate-500 text-[10px] rounded p-1 max-w-[140px] w-full text-center italic font-medium">No kids yet.</div>
+                    </div>
+
+                    <!-- 4. Bryl (Slightly narrower 88% width) -->
+                    <div class="flex flex-col items-center w-full">
+                        <div onclick="toggle('line-bryl', 'nokids-bryl')" class="bg-amber-50/80 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-800/60 rounded-lg p-2.5 w-[88%] text-center font-bold text-xs sm:text-sm text-amber-950 dark:text-amber-200 shadow-2xs cursor-pointer hover:border-amber-300 hover:bg-amber-100/50 select-none">
+                            Bryl
+                        </div>
+                        <div id="line-bryl" class="w-0.5 h-3 bg-amber-300 dark:bg-amber-600 hidden"></div>
+                        <div id="nokids-bryl" class="hidden bg-slate-100/80 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-800 text-slate-400 dark:text-slate-500 text-[10px] rounded p-1 max-w-[140px] w-full text-center italic font-medium">No kids yet.</div>
+                    </div>
+
+                    <!-- 5. Angelica (Slightly narrower 88% width) -->
+                    <div class="flex flex-col items-center w-full">
+                        <div onclick="toggle('line-angelica', 'nokids-angelica')" class="bg-amber-50/80 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-800/60 rounded-lg p-2.5 w-[88%] text-center font-bold text-xs sm:text-sm text-amber-950 dark:text-amber-200 shadow-2xs cursor-pointer hover:border-amber-300 hover:bg-amber-100/50 select-none">
+                            Angelica
+                        </div>
+                        <div id="line-angelica" class="w-0.5 h-3 bg-amber-300 dark:bg-amber-600 hidden"></div>
+                        <div id="nokids-angelica" class="hidden bg-slate-100/80 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-800 text-slate-400 dark:text-slate-500 text-[10px] rounded p-1 max-w-[140px] w-full text-center italic font-medium">No kids yet.</div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- FLOATING DARK/LIGHT MODE TOGGLE (LOWER RIGHT) -->
+    <button onclick="toggleTheme()" aria-label="Toggle Theme"
+            class="fixed bottom-4 right-4 z-50 p-2.5 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-lg text-slate-700 dark:text-slate-200 hover:scale-105 active:scale-95 transition-all flex items-center justify-center">
+        <span id="theme-icon">
+            <!-- Default Moon icon -->
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-slate-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+        </span>
+    </button>
+
+    <!-- SCRIPTS -->
+    <script>
+        function toggle(...ids) {
+            ids.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.classList.toggle('hidden');
+                }
+            });
+        }
+
+        function applyThemeUI() {
+            const isDark = document.documentElement.classList.contains('dark');
+            const themeIcon = document.getElementById('theme-icon');
+            const themeLabel = document.getElementById('theme-label');
+
+            if (themeIcon) {
+                if (isDark) {
+                    themeIcon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>`;
+                } else {
+                    themeIcon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-slate-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>`;
+                }
+            }
+            if (themeLabel) {
+                themeLabel.innerText = isDark ? 'Dark Mode' : 'Light Mode';
+            }
+        }
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            if (html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+            } else {
+                html.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+            }
+            applyThemeUI();
+        }
+
+        document.addEventListener('DOMContentLoaded', applyThemeUI);
+
+        function toggleBurgerMenu(e) {
+            if (e) e.stopPropagation();
+            const dropdown = document.getElementById('burger-dropdown');
+            dropdown.classList.toggle('hidden');
+        }
+
+        function openSearchModal() {
+            document.getElementById('burger-dropdown').classList.add('hidden');
+            const modal = document.getElementById('search-modal');
+            modal.classList.remove('hidden');
+            const input = document.getElementById('search-input');
+            setTimeout(() => input.focus(), 100);
+        }
+
+        function closeSearchModal() {
+            document.getElementById('search-modal').classList.add('hidden');
+        }
+
+        function clearSearch() {
+            const input = document.getElementById('search-input');
+            input.value = '';
+            document.querySelectorAll('.search-target-highlight').forEach(el => {
+                el.classList.remove('search-target-highlight');
+            });
+            document.getElementById('search-status').innerText = 'Press Enter or click Search to highlight & reveal member.';
+        }
+
+        let isExpandedAll = false;
+
+        function toggleExpandCompressAll() {
+            document.getElementById('burger-dropdown').classList.add('hidden');
+            const labelEl = document.getElementById('expand-label');
+            const iconEl = document.getElementById('expand-icon');
+
+            if (!isExpandedAll) {
+                // EXPAND ALL: Un-hide all children-* containers and their corresponding connector lines
+                document.querySelectorAll('[id^="children-"]').forEach(el => {
+                    el.classList.remove('hidden');
+
+                    // Un-hide matching line-XXX connector for this children-XXX container
+                    const lineId = 'line-' + el.id.replace('children-', '');
+                    const lineEl = document.getElementById(lineId);
+                    if (lineEl) {
+                        lineEl.classList.remove('hidden');
+                    }
+                });
+
+                isExpandedAll = true;
+                if (labelEl) labelEl.innerText = 'Compress All';
+                if (iconEl) {
+                    iconEl.innerHTML = `<polyline points="17 11 12 6 7 11"/><polyline points="17 18 12 13 7 18"/>`;
+                }
+            } else {
+                // COMPRESS ALL (Reset back to default landing state)
+                document.querySelectorAll('[id^="children-"], [id^="line-"], [id^="nokids-"]').forEach(el => {
+                    if (el.id !== 'children-root' && el.id !== 'line-root') {
+                        el.classList.add('hidden');
+                    }
+                });
+
+                // Ensure root children remain visible (default landing state)
+                const childrenRoot = document.getElementById('children-root');
+                const lineRoot = document.getElementById('line-root');
+                if (childrenRoot) childrenRoot.classList.remove('hidden');
+                if (lineRoot) lineRoot.classList.remove('hidden');
+
+                isExpandedAll = false;
+                if (labelEl) labelEl.innerText = 'Expand All';
+                if (iconEl) {
+                    iconEl.innerHTML = `<polyline points="7 13 12 18 17 13"/><polyline points="7 6 12 11 17 6"/>`;
+                }
+            }
+        }
+
+        function submitSearch(e) {
+            if (e) e.preventDefault();
+            const input = document.getElementById('search-input');
+            const query = input.value.trim();
+
+            if (!query) {
+                document.getElementById('search-status').innerText = 'Please type a name to search.';
+                return;
+            }
+
+            const found = executeSearch(query);
+            if (found) {
+                closeSearchModal();
+            }
+        }
+
+        function getCardSearchableText(card) {
+            const clone = card.cloneNode(true);
+            clone.querySelectorAll('.absolute, [id^="children-"], [id^="nokids-"]').forEach(el => el.remove());
+            return clone.innerText.trim().toLowerCase();
+        }
+
+        function executeSearch(query) {
+            const statusEl = document.getElementById('search-status');
+            query = query.toLowerCase();
+
+            // Clear previous search highlights
+            document.querySelectorAll('.search-target-highlight').forEach(el => {
+                el.classList.remove('search-target-highlight');
+            });
+
+            let matches = [];
+            const cards = document.querySelectorAll('[onclick]');
+            cards.forEach(card => {
+                const clickAttr = card.getAttribute('onclick') || '';
+                if (clickAttr.includes('toggleBurgerMenu') || clickAttr.includes('openSearchModal') || clickAttr.includes('toggleTheme') || clickAttr.includes('closeSearchModal') || clickAttr.includes('clearSearch') || clickAttr.includes('expandAll') || clickAttr.includes('toggleExpandCompressAll') || clickAttr.includes('submitSearch')) {
+                    return;
+                }
+
+                // Get card's direct text content excluding badge spans
+                const searchableText = getCardSearchableText(card);
+                
+                if (searchableText && searchableText.includes(query) && !textMatchesMenu(searchableText)) {
+                    matches.push(card);
+                    revealMatchedCard(card);
+                }
+            });
+
+            if (matches.length > 0) {
+                statusEl.innerHTML = `<span class="text-emerald-600 dark:text-emerald-400 font-bold">Found ${matches.length} match(es)!</span>`;
+                matches[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+                return true;
+            } else {
+                statusEl.innerHTML = `<span class="text-rose-500 font-bold">No member found</span> matching "${query}".`;
+                return false;
+            }
+        }
+
+        function revealMatchedCard(card) {
+            // 1. Highlight the card
+            card.classList.add('search-target-highlight');
+
+            // 2. Un-hide card's own children if it has any (from onclick attribute targets)
+            const clickAttr = card.getAttribute('onclick') || '';
+            const ids = clickAttr.match(/'([^']+)'/g);
+            if (ids) {
+                ids.forEach(m => {
+                    const id = m.replace(/'/g, '');
+                    const targetEl = document.getElementById(id);
+                    if (targetEl) targetEl.classList.remove('hidden');
+                });
+            }
+
+            // 3. Un-hide all parent containers and ALL connector lines up to root
+            let curr = card;
+            while (curr && curr !== document.body) {
+                if (curr.classList.contains('hidden')) {
+                    curr.classList.remove('hidden');
+                }
+
+                // Check if container ID maps to a line ID (children-XXX -> line-XXX, nokids-XXX -> line-XXX)
+                if (curr.id) {
+                    let lineId = '';
+                    if (curr.id.startsWith('children-')) {
+                        lineId = 'line-' + curr.id.replace('children-', '');
+                    } else if (curr.id.startsWith('nokids-')) {
+                        lineId = 'line-' + curr.id.replace('nokids-', '');
+                    }
+                    if (lineId) {
+                        const lineEl = document.getElementById(lineId);
+                        if (lineEl) lineEl.classList.remove('hidden');
+                    }
+                }
+
+                // Un-hide any sibling connector lines inside parent flex containers
+                if (curr.parentElement) {
+                    Array.from(curr.parentElement.children).forEach(sibling => {
+                        if (sibling.id && sibling.id.startsWith('line-')) {
+                            sibling.classList.remove('hidden');
+                        }
+                    });
+                }
+
+                curr = curr.parentElement;
+            }
+        }
+
+        function textMatchesMenu(txt) {
+            return txt.includes('search member') || txt.includes('analytics') || txt.includes('theme mode') || txt.includes('expand all');
+        }
+
+        function openAnalyticsModal() {
+            document.getElementById('burger-dropdown').classList.add('hidden');
+            renderAnalytics();
+            const modal = document.getElementById('analytics-modal');
+            modal.classList.remove('hidden');
+        }
+
+        function closeAnalyticsModal() {
+            document.getElementById('analytics-modal').classList.add('hidden');
+        }
+
+        function renderAnalytics() {
+            const branches = [
+                { name: "Tita Connie & Tito Joe", order: "2nd", count: 28, color: "bg-rose-500" },
+                { name: "Tito Boy & Tita Fe", order: "1st", count: 13, color: "bg-sky-500" },
+                { name: "Tita Tess & Tito Bert", order: "5th", count: 12, color: "bg-cyan-500" },
+                { name: "Tita Bekbek & Tito Yoshinori", order: "7th", count: 9, color: "bg-amber-500" },
+                { name: "Tito Rome & Tita Baby", order: "4th", count: 7, color: "bg-purple-500" },
+                { name: "Tita Baby & Tito Rene", order: "3rd", count: 5, color: "bg-emerald-500" },
+                { name: "Tito Rolly", order: "6th", count: 1, color: "bg-indigo-500" }
+            ];
+
+            const listContainer = document.getElementById('branch-leaderboard-list');
+            if (!listContainer) return;
+
+            const maxCount = 28;
+            listContainer.innerHTML = branches.map(b => {
+                const pct = Math.round((b.count / maxCount) * 100);
+                return `
+                    <div class="space-y-1">
+                        <div class="flex justify-between text-xs font-semibold text-slate-700 dark:text-slate-300">
+                            <span class="flex items-center gap-1.5">
+                                <span class="text-[10px] font-bold text-slate-400 dark:text-slate-500">#${b.order}</span>
+                                ${b.name}
+                            </span>
+                            <span class="font-bold text-slate-900 dark:text-white">${b.count} <span class="text-[10px] font-normal text-slate-400">members</span></span>
+                        </div>
+                        <div class="w-full h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                            <div class="h-full ${b.color} rounded-full transition-all duration-500" style="width: ${pct}%"></div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Handle global page clicks (close burger menu, clear search highlights on user click)
+        document.addEventListener('click', function(e) {
+            // 1. Close burger dropdown when clicking outside
+            const dropdown = document.getElementById('burger-dropdown');
+            const burgerBtn = document.querySelector('[onclick*="toggleBurgerMenu"]');
+            if (dropdown && !dropdown.classList.contains('hidden')) {
+                if (!dropdown.contains(e.target) && burgerBtn && !burgerBtn.contains(e.target)) {
+                    dropdown.classList.add('hidden');
+                }
+            }
+
+            // 2. Clear search highlights when user clicks anywhere on the page (except inside search modal input form)
+            const searchModal = document.getElementById('search-modal');
+            if (searchModal && !searchModal.contains(e.target)) {
+                document.querySelectorAll('.search-target-highlight').forEach(el => {
+                    el.classList.remove('search-target-highlight');
+                });
+            }
+        });
+
+        // Close search & analytics modals when clicking backdrop
+        document.getElementById('search-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeSearchModal();
+            }
+        });
+
+        document.getElementById('analytics-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeAnalyticsModal();
+            }
+        });
+    </script>
+</body>
+</html>
